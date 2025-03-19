@@ -7,19 +7,22 @@ export class LoginPage {
     this.page = page;
   }
 
-  async goto() {
-    await this.page.goto('https://opensource-demo.orangehrmlive.com/');
+  async goto(env: string) {
+    await this.page.goto(env);
   }
 
   async login(username: string, password: string) {
     await this.page.fill('input[name="username"]', username);
     await this.page.fill('input[name="password"]', password);
-    await this.page.click('button[type="submit"]');
+    await this.page.click('input[type="submit"]');
   }
 
-  
 
   async isDashboardVisible(): Promise<boolean> {
-    return await this.page.isVisible('.oxd-topbar-header-breadcrumb');
+    return await this.page.isVisible('#header');
+  }
+  
+  async errorMessage(): Promise<boolean> {
+    return await this.page.isVisible('.errornote')
   }
 }

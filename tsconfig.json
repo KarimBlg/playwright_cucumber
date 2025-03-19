@@ -5,6 +5,10 @@
       "outDir": "dist",
       "rootDir": "./",
       "strict": true
-    }
+    },
+    "include": [
+    "step-definitions/**/*.ts",
+    "features/**/*.ts"
+  ]
   }
   

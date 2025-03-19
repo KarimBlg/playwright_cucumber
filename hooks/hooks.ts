@@ -1,4 +1,4 @@
-import { Before, After } from '@cucumber/cucumber';
+/*import { Before, After } from '@cucumber/cucumber';
 import { chromium, Browser, Page } from 'playwright';
 
 let browser: Browser;
@@ -16,7 +16,6 @@ Before(async function () {
   this.browser = browser;
   this.page = page;
 });
-
 After(async function (scenario) {
   if (scenario.result?.status === 'FAILED') {
     await page.context().tracing.stop({ path: `traces/trace-${scenario.pickle.name}.zip` });
@@ -24,4 +23,4 @@ After(async function (scenario) {
     await page.context().tracing.stop();
   }
   await browser.close();
-});
+});*/
