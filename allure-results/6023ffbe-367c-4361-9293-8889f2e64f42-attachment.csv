@@ -1,0 +1,3 @@
+username,password,env
+testeur_integration,testeur_qa,http://int.siteinfos.com/admin/
+testeur_integration_2,testeur_qa_2,http://int.siteinfos.com/admin/
