@@ -1,19 +1,51 @@
 pipeline {
     agent any
-    parameters {
-        string(name: 'ENV', defaultValue: 'recette', description: 'Choisir l’environnement: recette ou preprod')
-    }
     stages {
-        stage('Tests sur Recette') {
-            when { expression { params.ENV == 'recette' } }
+        stage('build and install') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.51.0-noble'
+                }
+            }
+
             steps {
-                sh 'npx playwright test --config=playwright.recette.config.ts'
+                script {
+                    sh 'mkdir -p reports'
+                    sh 'npm ci'
+                    sh 'npx cucumber-js --config cucumber.js '
+                    //sh 'allure generate ./allure-results -o ./allure-report'
+                    stash name: 'allure-results', includes: 'allure-results/*'
+                }
             }
         }
-        stage('Tests sur Préprod') {
-            when { expression { params.ENV == 'preprod' } }
-            steps {
-                sh 'npx playwright test --config=playwright.preprod.config.ts'
+    }
+    post {
+        always {
+            //sh 'ls -al reports/' 
+
+            // cucumber buildStatus: 'UNSTABLE',
+            //         failedFeaturesNumber: 1,
+            //         failedScenariosNumber: 1,
+            //         skippedStepsNumber: 1,
+            //         failedStepsNumber: 1,
+            //         classifications: [
+            //                 [key: 'Commit', value: '<a href="${GERRIT_CHANGE_URL}">${GERRIT_PATCHSET_REVISION}</a>'],
+            //                 [key: 'Submitter', value: '${GERRIT_PATCHSET_UPLOADER_NAME}']
+            //         ],
+            //         reportTitle: 'My report',
+            //         fileIncludePattern: 'reports/cucumber-report.json', // Corrige le chemin d'inclusion
+            //         sortingMethod: 'ALPHABETICAL',
+            //         trendsLimit: 100
+            unstash 'allure-results' //extract results
+            script {
+                allure([
+                commandline: 'allure',
+                includeProperties: false,
+                jdk: '',
+                properties: [],
+                reportBuildPolicy: 'ALWAYS',
+                results: [[path: 'allure-results']]
+            ])
             }
         }
     }

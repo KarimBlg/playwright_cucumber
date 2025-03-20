@@ -37,6 +37,6 @@ Feature: Django Login
     Examples:
       | username                 | password        | env |
       | testeur_recette_faux   | testeur_qa_3        | http://rec.siteinfos.com/admin/ |
-      | testeur_integration_faux   | testeur_qa_3_faux   | http://rec.siteinfos.com/admin/ |
+      | testeur_recette   | testeur_qa_3_faux   | http://rec.siteinfos.com/admin/ |
       | testeur_recette_2_faux | testeur_qa_4      | http://rec.siteinfos.com/admin/ |
       | testeur_recette_2      | testeur_qa_4_faux | http://rec.siteinfos.com/admin/ |
