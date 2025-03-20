@@ -21,33 +21,25 @@ pipeline {
         }
     }
     post {
-        always {
-            //sh 'ls -al reports/' 
+    always {
+        script {
+            sh 'ls -al reports/'  // Vérifie la présence du rapport
 
-            cucumber buildStatus: 'UNSTABLE',
-                    failedFeaturesNumber: 1,
-                    failedScenariosNumber: 1,
-                    skippedStepsNumber: 1,
-                    failedStepsNumber: 1,
-                    classifications: [
-                            [key: 'Commit', value: '<a href="${GERRIT_CHANGE_URL}">${GERRIT_PATCHSET_REVISION}</a>'],
-                            [key: 'Submitter', value: '${GERRIT_PATCHSET_UPLOADER_NAME}']
-                    ],
-                    reportTitle: 'My report',
-                    fileIncludePattern: 'reports/cucumber-report.json', // Corrige le chemin d'inclusion
-                    sortingMethod: 'ALPHABETICAL',
-                    trendsLimit: 100
-
-            // script {
-            //     allure([
-
-            //     includeProperties: false,
-            //     jdk: '',
-            //     properties: [],
-            //     reportBuildPolicy: 'ALWAYS',
-            //     results: [[path: 'allure-results']]
-            // ])
-            // }
+            cucumber(
+                buildStatus: 'UNSTABLE',
+                failedFeaturesNumber: 1,
+                failedScenariosNumber: 1,
+                skippedStepsNumber: 1,
+                failedStepsNumber: 1,
+                classifications: [
+                    [key: 'Commit', value: "<a href='${env.GERRIT_CHANGE_URL}'>${env.GERRIT_PATCHSET_REVISION}</a>"],
+                    [key: 'Submitter', value: "${env.GERRIT_PATCHSET_UPLOADER_NAME}"]
+                ],
+                reportTitle: 'My report',
+                fileIncludePattern: 'reports/cucumber-report.json', // Assure-toi que le fichier existe !
+                sortingMethod: 'ALPHABETICAL',
+                trendsLimit: 100
+            )
         }
     }
 }
