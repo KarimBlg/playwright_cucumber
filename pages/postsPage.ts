@@ -25,8 +25,8 @@ export class PostsPage {
   async isPostAdded(){
     return this.page.locator(".success")
   }
-  async errorMessage(): Promise<boolean> {
-    return await this.page.isVisible(".errornote")
+  async errorMessage(){
+    return this.page.locator("text=Please correct the error below.");
   }
   async errorMessagePostExist(): Promise<boolean> {
     return await this.page.locator('li', { hasText: 'Post with this Title already exists.' }).isVisible();

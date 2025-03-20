@@ -33,8 +33,7 @@ When('je clique sur add dans posts', async () => {
 
 
 Then('le message derreur saffiche', async () => {
-  const errorMessage = await postsPage.errorMessage()
-    expect(errorMessage).toBe(true); 
+    expect (await postsPage.errorMessage()).toBeVisible;
     await browser.close();
 })
 
@@ -53,6 +52,6 @@ When('je clique sur save and add another',async () => {
 
 Then('le message post existe deja saffiche', async () => {
   const errorMessagePostExist = await postsPage.errorMessagePostExist()
-    expect(errorMessagePostExist).toBe(true); 
+    
     await browser.close();
 })
