@@ -39,7 +39,7 @@ Then('le message derreur saffiche', async () => {
 })
 
 Given('je suis connecte avec Username {string} et Password {string} dans lenvironnement {string}',async function(username: string, password: string, env: string) {
-  browser = await chromium.launch({ headless: false });
+  browser = await chromium.launch({ headless: true });
     page = await browser.newPage();
     loginPage = new LoginPage(page);
     await loginPage.goto(env);

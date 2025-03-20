@@ -9,7 +9,7 @@ let page: Page;
 let loginPage: LoginPage;
 
 Given('I open the login page {string}', async function(env: string){
-  browser = await chromium.launch({ headless: false });
+  browser = await chromium.launch({ headless: true });
   page = await browser.newPage();
   loginPage = new LoginPage(page);
   await loginPage.goto(env);
