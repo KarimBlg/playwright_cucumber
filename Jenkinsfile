@@ -1,5 +1,6 @@
 pipeline {
     agent any
+
     stages {
         stage('build and install') {
             agent {
@@ -13,40 +14,36 @@ pipeline {
                 script {
                     sh 'mkdir -p reports'
                     sh 'npm ci'
-                    sh 'npx cucumber-js --config cucumber.js '
-                    //sh 'allure generate ./allure-results -o ./allure-report'
+                    sh 'npx cucumber-js --config cucumber.js'
                     stash name: 'allure-results', includes: 'allure-results/*'
                 }
             }
         }
+
+        stage('Generate Allure Report') {
+            steps {
+                script {
+                    // Verify if allure-results exists before unstashing
+                    if (fileExists('allure-results')) {
+                        unstash 'allure-results'
+                        sh 'allure generate allure-results --output allure-report'  // Generate the allure report
+                    } else {
+                        echo "No allure-results found, skipping report generation."
+                    }
+                }
+            }
+        }
     }
+
     post {
         always {
-            //sh 'ls -al reports/' 
-
-            // cucumber buildStatus: 'UNSTABLE',
-            //         failedFeaturesNumber: 1,
-            //         failedScenariosNumber: 1,
-            //         skippedStepsNumber: 1,
-            //         failedStepsNumber: 1,
-            //         classifications: [
-            //                 [key: 'Commit', value: '<a href="${GERRIT_CHANGE_URL}">${GERRIT_PATCHSET_REVISION}</a>'],
-            //                 [key: 'Submitter', value: '${GERRIT_PATCHSET_UPLOADER_NAME}']
-            //         ],
-            //         reportTitle: 'My report',
-            //         fileIncludePattern: 'reports/cucumber-report.json', // Corrige le chemin d'inclusion
-            //         sortingMethod: 'ALPHABETICAL',
-            //         trendsLimit: 100
-            unstash 'allure-results' //extract results
+            // Ensure that the generated allure report exists before attempting to display it
             script {
-                allure([
-                commandline: 'allure',
-                includeProperties: false,
-                jdk: '',
-                properties: [],
-                reportBuildPolicy: 'ALWAYS',
-                results: [[path: 'allure-results']]
-            ])
+                if (fileExists('allure-report')) {
+                    echo 'Allure report generated successfully.'
+                } else {
+                    echo 'Allure report generation failed or was skipped.'
+                }
             }
         }
     }
