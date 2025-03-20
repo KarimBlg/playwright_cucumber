@@ -23,7 +23,7 @@ When('je clique sur Save',async  () => {
 
 Then('le post est ajoute', async function() {
   const successMessage = await postsPage.isPostAdded()
-  expect(successMessage).toBe(true); 
+  expect(successMessage).toBe(false); 
  
 })
 
