@@ -1,7 +1,7 @@
 pipeline {
     agent any
+    
     stages {
-        
         stage('build and install') {
             agent {
                 docker {
@@ -11,10 +11,18 @@ pipeline {
 
             steps {
                 script {
-                    sh 'mkdir -p reports'
+                    //sh 'mkdir -p reports'
                     sh 'npm ci'
-                    sh 'npx cucumber-js --config cucumber.js --format json:reports/cucumber-report.json'
-                    //sh 'allure generate ./allure-results -o ./allure-report'
+                    
+                    if (params.ENVIRONMENT == 'all') {
+                        sh 'npx cucumber-js --config cucumber.js --tags "not @ignore"'
+                    } else {
+                        sh "TAGS='@${params.ENVIRONMENT} and not @ignore' npx cucumber-js --config cucumber.js"
+                    }
+                    //sh 'npx cucumber-js --format json:reports/cucumber-report.json'
+                    //sh "npx cucumber-js --tags @${params.ENVIRONMENT} --format json:reports/cucumber-report.json"
+                    //sh 'npx cucumber-js'
+                    //sh "TAGS='@${params.ENVIRONMENT}' npx cucumber-js --config cucumber.js"
                     stash name: 'allure-results', includes: 'allure-results/*'
                 }
             }
@@ -37,10 +45,9 @@ pipeline {
             //         fileIncludePattern: 'reports/cucumber-report.json', // Corrige le chemin d'inclusion
             //         sortingMethod: 'ALPHABETICAL',
             //         trendsLimit: 100
-
+            unstash 'allure-results' //extract results
             script {
                 allure([
-
                 includeProperties: false,
                 jdk: '',
                 properties: [],
