@@ -16,7 +16,7 @@ Feature: Django Login
     @rec
     Examples:
       | username          | password     | env                             |
-      | testeur_recette   | testeur_qa_3 | http://192.168.1.95:9092/admin/|
+      | testeur_recette   | testeur_qa_3 | http://192.168.1.95:9092/admin/ |
       | testeur_recette_2 | testeur_qa_4 | http://192.168.1.95:9092/admin/ |
 
   @invalid
