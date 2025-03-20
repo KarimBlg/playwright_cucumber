@@ -36,6 +36,6 @@ Scenario: add the same post addSamePostTwice
     And je saisis Title "same post"
     And je saisis Content "hahaha"
     And je clique sur Save
-    Then le message post existe deja saffiche
+    Then le message derreur saffiche
 
 

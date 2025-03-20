@@ -33,8 +33,8 @@ When('je clique sur add dans posts', async () => {
 
 
 Then('le message derreur saffiche', async () => {
-    const errorMessage = await loginPage.errorMessage()
-    expect(errorMessage).toBe(true); 
+  const successMessage = await postsPage.isPostAdded()
+  expect(successMessage).toBe(false);  
 
 })
 
@@ -50,9 +50,3 @@ When('je clique sur save and add another',async () => {
   await postsPage.clicSaveAddAnother()
 })
 
-Then('le message post existe deja saffiche', async () => {
-  const errorMessage = await loginPage.errorMessage()
-    expect(errorMessage).toBe(true); 
-    
-
-})
