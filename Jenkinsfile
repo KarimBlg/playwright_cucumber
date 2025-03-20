@@ -1,14 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('Clean Allure Reports') {
-            steps {
-                script {
-                    sh 'rm -rf allure-results allure-report'  // Supprime les anciens résultats et rapports
-                    sh 'mkdir -p allure-results'  // Recrée le dossier pour éviter les erreurs
-                }
-            }
-        }
+        
         stage('build and install') {
             agent {
                 docker {
