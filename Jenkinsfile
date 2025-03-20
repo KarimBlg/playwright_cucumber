@@ -1,7 +1,14 @@
 pipeline {
     agent any
     stages {
-       
+        stage('Clean Allure Reports') {
+            steps {
+                script {
+                    sh 'rm -rf allure-results allure-report'  // Supprime les anciens résultats et rapports
+                    sh 'mkdir -p allure-results'  // Recrée le dossier pour éviter les erreurs
+                }
+            }
+        }
         stage('build and install') {
             agent {
                 docker {
@@ -12,54 +19,42 @@ pipeline {
             steps {
                 script {
                     sh 'mkdir -p reports'
-                    sh 'ls -al' // Vérifie si "reports" est bien là
                     sh 'npm ci'
-                    sh 'npx cucumber-js --config cucumber.js --format json:reports/cucumber-report.json || echo "Cucumber report failed"'
-                    sh 'ls -al reports/' // Vérifie si "cucumber-report.json" a bien été généré
+                    sh 'npx cucumber-js --config cucumber.js --format json:reports/cucumber-report.json'
+                    //sh 'allure generate ./allure-results -o ./allure-report'
                     stash name: 'allure-results', includes: 'allure-results/*'
                 }
             }
         }
     }
     post {
-    always {
-        script {
-            sh '[ -d reports ] && ls -al reports/ || echo "Le dossier reports/ est manquant !"'
-            sh '[ -d allure-results ] && ls -al allure-results/ || echo "Le dossier allure-results/ est manquant !"'
+        always {
+            //sh 'ls -al reports/' 
 
-            if (fileExists('reports/cucumber-report.json')) {
-                cucumber(
-                    buildStatus: 'UNSTABLE',
-                    failedFeaturesNumber: 1,
-                    failedScenariosNumber: 1,
-                    skippedStepsNumber: 1,
-                    failedStepsNumber: 1,
-                    classifications: [
-                        [key: 'Commit', value: "<a href='${env.GERRIT_CHANGE_URL}'>${env.GERRIT_PATCHSET_REVISION}</a>"],
-                        [key: 'Submitter', value: "${env.GERRIT_PATCHSET_UPLOADER_NAME}"]
-                    ],
-                    reportTitle: 'My report',
-                    fileIncludePattern: 'reports/cucumber-report.json',
-                    sortingMethod: 'ALPHABETICAL',
-                    trendsLimit: 100
-                )
-            } else {
-                echo "⚠️ Le fichier reports/cucumber-report.json est introuvable, rapport Cucumber non généré."
-            }
+            // cucumber buildStatus: 'UNSTABLE',
+            //         failedFeaturesNumber: 1,
+            //         failedScenariosNumber: 1,
+            //         skippedStepsNumber: 1,
+            //         failedStepsNumber: 1,
+            //         classifications: [
+            //                 [key: 'Commit', value: '<a href="${GERRIT_CHANGE_URL}">${GERRIT_PATCHSET_REVISION}</a>'],
+            //                 [key: 'Submitter', value: '${GERRIT_PATCHSET_UPLOADER_NAME}']
+            //         ],
+            //         reportTitle: 'My report',
+            //         fileIncludePattern: 'reports/cucumber-report.json', // Corrige le chemin d'inclusion
+            //         sortingMethod: 'ALPHABETICAL',
+            //         trendsLimit: 100
 
-            if (fileExists('allure-results')) {
+            script {
                 allure([
-                    includeProperties: false,
-                    jdk: '',
-                    properties: [],
-                    reportBuildPolicy: 'ALWAYS',
-                    results: [[path: 'allure-results']]
-                ])
-            } else {
-                echo "⚠️ Le dossier allure-results/ est introuvable, rapport Allure non généré."
+
+                includeProperties: false,
+                jdk: '',
+                properties: [],
+                reportBuildPolicy: 'ALWAYS',
+                results: [[path: 'allure-results']]
+            ])
             }
         }
     }
-}
-
 }
