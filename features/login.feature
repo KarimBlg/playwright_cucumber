@@ -28,15 +28,15 @@ Feature: Django Login
     @int
     Examples:
       | username                 | password        | env |
-      | testeur_integration_faux   | testeur_qa        | http://int.siteinfos.com/admin/ |
-      | testeur_integration  | testeur_qa_faux   | http://int.siteinfos.com/admin/ |
-      | testeur_integration_2_faux | testeur_qa_2      | http://int.siteinfos.com/admin/ |
-      | testeur_integration_2      | testeur_qa_2_faux | http://int.siteinfos.com/admin/ |
+      | testeur_integration_faux   | testeur_qa        | http://192.168.1.95:9091/admin/ |
+      | testeur_integration  | testeur_qa_faux   | http://192.168.1.95:9091/admin/ |
+      | testeur_integration_2_faux | testeur_qa_2      | http://192.168.1.95:9091/admin/ |
+      | testeur_integration_2      | testeur_qa_2_faux | http://192.168.1.95:9091/admin/ |
 
      @rec
     Examples:
       | username                 | password        | env |
-      | testeur_recette_faux   | testeur_qa_3        | http://rec.siteinfos.com/admin/ |
-      | testeur_recette   | testeur_qa_3_faux   | http://rec.siteinfos.com/admin/ |
-      | testeur_recette_2_faux | testeur_qa_4      | http://rec.siteinfos.com/admin/ |
-      | testeur_recette_2      | testeur_qa_4_faux | http://rec.siteinfos.com/admin/ |
+      | testeur_recette_faux   | testeur_qa_3        | http://192.168.1.95:9092/admin/ |
+      | testeur_recette   | testeur_qa_3_faux   | http://192.168.1.95:9092/admin/  |
+      | testeur_recette_2_faux | testeur_qa_4      | http://192.168.1.95:9092/admin/  |
+      | testeur_recette_2      | testeur_qa_4_faux | http://192.168.1.95:9092/admin/  |
