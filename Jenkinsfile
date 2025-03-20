@@ -22,7 +22,7 @@ pipeline {
     }
     post {
         always {
-            sh 'ls -al reports/' 
+            //sh 'ls -al reports/' 
 
             cucumber buildStatus: 'UNSTABLE',
                     failedFeaturesNumber: 1,
