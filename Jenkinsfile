@@ -1,7 +1,16 @@
 pipeline {
     agent any
     stages {
-        stage('build and install') {
+        stage('Clean Allure Reports') {
+            steps {
+                script {
+                    sh 'rm -rf allure-results allure-report'  // Supprime les anciens résultats et rapports
+                    sh 'mkdir -p allure-results'  // Recrée le dossier pour éviter les erreurs
+                }
+            }
+        }
+
+        stage('Build and Install') {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.51.0-noble'
@@ -10,42 +19,27 @@ pipeline {
 
             steps {
                 script {
-                    sh 'mkdir -p reports'
                     sh 'npm ci'
-                    sh 'npx cucumber-js --config cucumber.js --format json:reports/cucumber-report.json'
-                    //sh 'allure generate ./allure-results -o ./allure-report'
+                    sh 'npx cucumber-js --config cucumber.js --format json:allure-results/cucumber-report.json'
                     stash name: 'allure-results', includes: 'allure-results/*'
                 }
             }
         }
     }
+
     post {
         always {
-            //sh 'ls -al reports/' 
-
-            // cucumber buildStatus: 'UNSTABLE',
-            //         failedFeaturesNumber: 1,
-            //         failedScenariosNumber: 1,
-            //         skippedStepsNumber: 1,
-            //         failedStepsNumber: 1,
-            //         classifications: [
-            //                 [key: 'Commit', value: '<a href="${GERRIT_CHANGE_URL}">${GERRIT_PATCHSET_REVISION}</a>'],
-            //                 [key: 'Submitter', value: '${GERRIT_PATCHSET_UPLOADER_NAME}']
-            //         ],
-            //         reportTitle: 'My report',
-            //         fileIncludePattern: 'reports/cucumber-report.json', // Corrige le chemin d'inclusion
-            //         sortingMethod: 'ALPHABETICAL',
-            //         trendsLimit: 100
-
             script {
-                allure([
+                unstash 'allure-results'  // Récupère les fichiers générés par Cucumber
+                sh 'allure generate allure-results -o allure-report --clean'  // Génère un nouveau rapport propre
 
-                includeProperties: false,
-                jdk: '',
-                properties: [],
-                reportBuildPolicy: 'ALWAYS',
-                results: [[path: 'allure-results']]
-            ])
+                allure([
+                    includeProperties: false,
+                    jdk: '',
+                    properties: [],
+                    reportBuildPolicy: 'ALWAYS',
+                    results: [[path: 'allure-results']]
+                ])
             }
         }
     }
