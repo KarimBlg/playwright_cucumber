@@ -1,11 +1,11 @@
-/*import { Before, After } from '@cucumber/cucumber';
+import { Before, After } from '@cucumber/cucumber';
 import { chromium, Browser, Page } from 'playwright';
 
 let browser: Browser;
 let page: Page;
 
 Before(async function () {
-  browser = await chromium.launch({ headless: false });
+  browser = await chromium.launch({ headless: true});
   page = await browser.newPage();
 
   await page.context().tracing.start({
@@ -16,6 +16,7 @@ Before(async function () {
   this.browser = browser;
   this.page = page;
 });
+
 After(async function (scenario) {
   if (scenario.result?.status === 'FAILED') {
     await page.context().tracing.stop({ path: `traces/trace-${scenario.pickle.name}.zip` });
@@ -23,4 +24,4 @@ After(async function (scenario) {
     await page.context().tracing.stop();
   }
   await browser.close();
-});*/
+});

@@ -1,14 +1,17 @@
 import { Page } from 'playwright';
 
 export class LoginPage {
-  private page: Page;
+  readonly page: Page;
 
   constructor(page: Page) {
     this.page = page;
   }
 
-  async goto(env: string) {
+  async visit(env: string) {
+    // console.log("v**************")
     await this.page.goto(env);
+    
+    // console.log("v2**************")
   }
 
   async login(username: string, password: string) {

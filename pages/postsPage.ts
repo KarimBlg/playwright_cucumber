@@ -1,7 +1,7 @@
 import { Page } from 'playwright';
 
 export class PostsPage {
-  private page: Page;
+  readonly page: Page;
 
   constructor(page: Page) {
     this.page = page;
@@ -22,15 +22,10 @@ export class PostsPage {
   async clicSaveAddAnother(){
     await this.page.click('input[name="_addanother"]');
   }
-  async isPostAdded(){
-    return this.page.locator(".success")
+  async isPostAdded(): Promise<boolean> {
+    return await this.page.isVisible('.success')
   }
-  async errorMessage(){
-    return this.page.locator("text=Please correct the error below.");
-  }
-  async errorMessagePostExist(): Promise<boolean> {
-    return await this.page.locator('li', { hasText: 'Post with this Title already exists.' }).isVisible();
-  }
+
   
   
 }

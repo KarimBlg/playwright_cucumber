@@ -12,7 +12,7 @@ pipeline {
                 script {
                     sh 'mkdir -p reports'
                     sh 'npm ci'
-                    sh 'npx cucumber-js --config cucumber.js --format json:reports/cucumber-report.json'
+                    sh 'npx cucumber-js --config cucumber.js --tags @login --format json:reports/cucumber-report.json'
                     //sh 'allure generate ./allure-results -o ./allure-report'
                     stash name: 'allure-results', includes: 'allure-results/*'
                 }

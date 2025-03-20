@@ -4,8 +4,7 @@ import { PostsPage } from '../pages/postsPage';
 import { expect } from '@playwright/test';
 import { Given, Then, When } from "@cucumber/cucumber";
 
-let browser: Browser;
-let page: Page;
+
 let loginPage: LoginPage;
 let postsPage: PostsPage;
 
@@ -22,9 +21,10 @@ When('je clique sur Save',async  () => {
   await postsPage.clicSave()
 })
 
-Then('le post est ajoute', async () => {
-  expect(await postsPage.isPostAdded()).toBeVisible;
-  await browser.close();
+Then('le post est ajoute', async function() {
+  const successMessage = await postsPage.isPostAdded()
+  expect(successMessage).toBe(true); 
+ 
 })
 
 When('je clique sur add dans posts', async () => {
@@ -33,17 +33,17 @@ When('je clique sur add dans posts', async () => {
 
 
 Then('le message derreur saffiche', async () => {
-    expect (await postsPage.errorMessage()).toBeVisible;
-    await browser.close();
+    const errorMessage = await loginPage.errorMessage()
+    expect(errorMessage).toBe(true); 
+
 })
 
 Given('je suis connecte avec Username {string} et Password {string} dans lenvironnement {string}',async function(username: string, password: string, env: string) {
-  browser = await chromium.launch({ headless: true });
-    page = await browser.newPage();
-    loginPage = new LoginPage(page);
-    await loginPage.goto(env);
+
+    loginPage = new LoginPage(this.page);
+    await loginPage.visit(env);
     await loginPage.login(username, password);
-    postsPage = new PostsPage(page);
+    postsPage = new PostsPage(this.page);
 })
 
 When('je clique sur save and add another',async () => {
@@ -51,7 +51,8 @@ When('je clique sur save and add another',async () => {
 })
 
 Then('le message post existe deja saffiche', async () => {
-  const errorMessagePostExist = await postsPage.errorMessagePostExist()
+  const errorMessage = await loginPage.errorMessage()
+    expect(errorMessage).toBe(true); 
     
-    await browser.close();
+
 })

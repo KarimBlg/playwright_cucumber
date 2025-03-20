@@ -2,7 +2,7 @@ module.exports = {
     default: {
       require: [
         "step-definitions/**/*.ts",   // Path to step definitions
-        //"hooks/**/*.ts"               // Path to hooks
+        "hooks/**/*.ts"               // Path to hooks
       ],
       format: [
         "allure-cucumberjs/reporter",
